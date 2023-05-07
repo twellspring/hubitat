@@ -688,6 +688,7 @@ function createTileInputs(tileId) {
 	tableHTML += createTileTextPosInputs(tileId, 'Primary');
 	tableHTML += createTileTextPosInputs(tileId, 'Secondary');
 	tableHTML += createTileTextPosInputs(tileId, 'Tertiary');
+	tableHTML += createTileTextPosInputs(tileId, 'Variable');
 	tableHTML += createTileTextPosInputs(tileId, 'TextTile');
 	tableHTML += '</table>';
 	tableHTML += '</div>\n';
@@ -833,13 +834,20 @@ function getTileBorderCSS(tileId, srcTileId, borderPos) {
 function getTileTextCSS(tileId, srcTileId, textPos) {
 
 	var textCSS = '';
+
+	if (textPos = 'Variable') {
+			prefix = '	#' + tileId + ' .tile-' + textPos.toLowerCase();
+		}
+		else {
+			prefix = '	#' + tileId + ' .tile-'
+		}
 	
 	if (textPos != 'TextTile') {
 		var hide		= document.getElementById(srcTileId + '_text' + textPos + 'Hide').checked;
 		var replace		= document.getElementById(srcTileId + '_text' + textPos + 'Replace').checked;
 		var addTo 		= document.getElementById(srcTileId + '_text' + textPos + 'AddTo').checked;
 		if(hide) {
-			textCSS += '	#' + tileId + ' .tile-' + textPos.toLowerCase() + ' { ';
+			textCSS += prefix + ' { ';
 			textCSS += 'display: none; visibility: hidden; ';
 			textCSS += '}\n';
 		}
@@ -847,10 +855,10 @@ function getTileTextCSS(tileId, srcTileId, textPos) {
 		{
 			if(replace) {
 				var replaceText		= document.getElementById(srcTileId + '_text' + textPos + 'ReplaceText').value;
-				textCSS += '	#' + tileId + ' .tile-' + textPos.toLowerCase() + ' { ';
+				textCSS += prefix + ' { ';
 				textCSS += 'visibility: hidden; ';
 				textCSS += '}\n';
-				textCSS += '	#' + tileId + ' .tile-' + textPos.toLowerCase() + ':after { visibility: visible !important; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); overflow: hidden; white-space: nowrap !important; content: "' + replaceText + '" !important; }\n';
+				textCSS += prefix + ':after { visibility: visible !important; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); overflow: hidden; white-space: nowrap !important; content: "' + replaceText + '" !important; }\n';
 				
 			}
 			else
@@ -858,8 +866,8 @@ function getTileTextCSS(tileId, srcTileId, textPos) {
 				if(addTo) {
 					var before	= document.getElementById(srcTileId + '_text' + textPos + 'BeforeText').value;
 					var after	= document.getElementById(srcTileId + '_text' + textPos + 'AfterText').value;
-					if(before != '') { textCSS += '	#' + tileId + ' .tile-' + textPos.toLowerCase() + ':before{ visibility: visible !important; content: "' + before + '" !important; }\n'; }
-					if(after != '') { textCSS += '	#' + tileId + ' .tile-' + textPos.toLowerCase() + ':after { visibility: visible !important; content: "' + after + '" !important; }\n'; }
+					if(before != '') { textCSS += prefix + ':before{ visibility: visible !important; content: "' + before + '" !important; }\n'; }
+					if(after != '') { textCSS += prefix + ':after { visibility: visible !important; content: "' + after + '" !important; }\n'; }
 				}
 			}
 		}
@@ -888,7 +896,7 @@ function getTileTextCSS(tileId, srcTileId, textPos) {
 	var alignVal = document.getElementById(srcTileId + '_text' + textPos + 'AlignVal').value;
 	
 	if (adjustFontFamily || adjustFontSize || vFontBold || vFontItalic || vFontUnderline || vFontColor) {
-		if (textPos != 'TextTile') { textCSS += '	#' + tileId + ' .tile-' + textPos.toLowerCase() + ' {\n'; }
+		if (textPos != 'TextTile') { textCSS += prefix + ' {\n'; }
 		else { textCSS += '	#' + tileId + ' div>div ' + ' {\n'; }
 		
 		var settings = '';
@@ -1061,6 +1069,7 @@ if (includeDashCustomCSS.checked) {
 			if (document.getElementById(srcTileId + '_textPrimary').checked)	{ data += getTileTextCSS(tileId, srcTileId, 'Primary'); }
 			if (document.getElementById(srcTileId + '_textSecondary').checked)	{ data += getTileTextCSS(tileId, srcTileId, 'Secondary'); }
 			if (document.getElementById(srcTileId + '_textTertiary').checked)	{ data += getTileTextCSS(tileId, srcTileId, 'Tertiary'); }
+			if (document.getElementById(srcTileId + '_textVariable').checked)	{ data += getTileTextCSS(tileId, srcTileId, 'Variable'); }
 			if (document.getElementById(srcTileId + '_textTextTile').checked)	{ data += getTileTextCSS(tileId, srcTileId, 'TextTile'); }
 			
 			// Icons and Controls
@@ -1275,6 +1284,11 @@ for (i = 0; i < x.length; i++) {
 																		if (textJson != '{ ') { textJson += ','; }
 																		textJson += '\n				"Tertiary": ' + getTileTextJSON(x[i].id, 'Tertiary');
 																	}
+	if (document.getElementById(x[i].id + '_textVariable').checked) {
+																		if (textJson != '{ ') { textJson += ','; }
+																		textJson += '\n				"Variable": ' + getTileTextJSON(x[i].id, 'Variable');
+																	}
+
 	if (document.getElementById(x[i].id + '_textTextTile').checked) {
 																		if (textJson != '{ ') { textJson += ','; }
 																		textJson += '\n				"TextTile": ' + getTileTextJSON(x[i].id, 'TextTile');
