@@ -836,10 +836,10 @@ function getTileTextCSS(tileId, srcTileId, textPos) {
 	var textCSS = '';
 
 	if (textPos = 'Variable') {
-			prefix = '	#' + tileId + ' .tile-' + textPos.toLowerCase();
+			prefix = '	#' + tileId + '.flex-grow-0';
 		}
 		else {
-			prefix = '	#' + tileId + ' .tile-'
+			prefix = '	#' + tileId + ' .tile-' + textPos.toLowerCase();
 		}
 	
 	if (textPos != 'TextTile') {
